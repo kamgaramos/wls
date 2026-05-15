@@ -45,17 +45,17 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# checkov:skip=CKV_AWS_24: "L'ouverture du port SSH (22) au public est necessaire pour l'administration initiale via Ansible"
-# checkov:skip=CKV_AWS_260: "L'entree du trafic sur les ports 80 et 443 doit etre publique pour le serveur Web AgriCam"
-# checkov:skip=CKV_AWS_382: "Autorisation SSH publique assumee pour ce deploiement de test/prod"
-# checkov:skip=CKV_AWS_23: "La regle d'egress ouverte est requise pour installer Nginx et telecharger les paquets applicatifs"
+# checkov:skip=CKV_AWS_24: "L'ouverture du port SSH (22) au public est necessaire"
+# checkov:skip=CKV_AWS_260: "L'entree du trafic sur les ports 80 et 443 doit etre publique"
+# checkov:skip=CKV_AWS_382: "Autorisation SSH publique assumee pour ce deploiement"
+# checkov:skip=CKV_AWS_23: "La regle d'egress ouverte est requise pour installer Nginx"
 resource "aws_security_group" "web" {
   name        = "${var.projet}-sg-web-${var.environnement}"
   description = "Autorise HTTP et SSH"
   vpc_id      = aws_vpc.main.id
 
   ingress {
-    description = "Acces HTTP public pour AgriCam"
+    description = "Acces HTTP public pour le serveur"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
@@ -63,7 +63,7 @@ resource "aws_security_group" "web" {
   }
 
   ingress {
-    description = "Acces HTTPS public pour AgriCam"
+    description = "Acces HTTPS public pour le serveur"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
@@ -71,16 +71,15 @@ resource "aws_security_group" "web" {
   }
 
   ingress {
-    description = "Acces SSH pour l'administration de l'instance"
+    description = "Acces SSH pour administration"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Autorisation de sortie complète pour permettre l'installation de Nginx
   egress {
-    description = "Autorisation de sortie complete pour les mises a jour du serveur"
+    description = "Autorisation de sortie complete pour les mises a jour"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
