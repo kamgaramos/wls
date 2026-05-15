@@ -41,6 +41,7 @@ jobs:
         id: plan
         run: |
           terraform plan \
+            -lock=false \
             -var="db_password=${{ secrets.TF_VAR_DB_PASSWORD }}" \
             -out=tfplan
         working-directory: ${{ env.WORKING_DIR }}
@@ -93,7 +94,7 @@ jobs:
           merge-multiple: true
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply -auto-approve -lock=false tfplan
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Affichage des outputs
