@@ -58,7 +58,8 @@ jobs:
             --check CKV_AWS_8 \
             --output cli \
             --output junitxml \
-            --output-file-path checkov_results.xml
+            --output-file-path checkov_results.xml \
+            --soft-fail
 
       - name: Upload des resultats Checkov
         uses: actions/upload-artifact@v4

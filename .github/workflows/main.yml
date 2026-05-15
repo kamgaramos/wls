@@ -1,0 +1,15 @@
+name: Test Actions AgriCam
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Hello World
+        run: echo "GitHub Actions fonctionne enfin !"

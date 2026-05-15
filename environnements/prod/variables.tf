@@ -1,10 +1,30 @@
-variable "aws_region" { type = string }
-variable "environnement" { type = string }
-variable "projet" { type = string }
-variable "vpc_cidr" { type = string }
-variable "subnet_public_cidr" { type = string }
-variable "instance_type" { type = string }
-variable "ami_id" { type = string }
+variable "aws_region" {
+  type = string
+}
+
+variable "environnement" {
+  type = string
+}
+
+variable "projet" {
+  type = string
+}
+
+variable "vpc_cidr" {
+  type = string
+}
+
+variable "subnet_public_cidr" {
+  type = string
+}
+
+variable "instance_type" {
+  type = string
+}
+
+variable "ami_id" {
+  type = string
+}
 
 # variable "db_password" {
 #   type      = string
