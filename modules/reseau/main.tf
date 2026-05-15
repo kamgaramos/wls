@@ -45,48 +45,60 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
+# -----------------------------------------------------------
+# SECURITY GROUP (Conteneur vide pour éviter les recréations)
+# -----------------------------------------------------------
 resource "aws_security_group" "web" {
-  # checkov:skip=CKV_AWS_24
-  # checkov:skip=CKV_AWS_260
-  # checkov:skip=CKV_AWS_382
-  # checkov:skip=CKV_AWS_23
   name        = "${var.projet}-sg-web-${var.environnement}"
-  description = "Autorise HTTP et SSH"
+  description = "Autorise HTTP, HTTPS et SSH"
   vpc_id      = aws_vpc.main.id
-
-  ingress {
-    description = "Acces HTTP public pour le serveur"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "Acces HTTPS public pour le serveur"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "Acces SSH pour administration"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    description = "Autorisation de sortie complete pour les mises a jour"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
   tags = {
     Name = "${var.projet}-sg-${var.environnement}"
   }
+}
+
+# -----------------------------------------------------------
+# REGLES DU SECURITY GROUP (Isolées pour la stabilité)
+# -----------------------------------------------------------
+resource "aws_security_group_rule" "http" {
+  # checkov:skip=CKV_AWS_24: "Autoriser le HTTP public est requis pour le serveur web"
+  type              = "ingress"
+  description       = "Acces HTTP public pour le serveur"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.web.id
+}
+
+resource "aws_security_group_rule" "https" {
+  type              = "ingress"
+  description       = "Acces HTTPS public pour le serveur"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.web.id
+}
+
+resource "aws_security_group_rule" "ssh" {
+  # checkov:skip=CKV_AWS_23: "SSH ouvert temporairement pour la configuration"
+  type              = "ingress"
+  description       = "Acces SSH pour administration"
+  from_port         = 22
+  to_port           = 22
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.web.id
+}
+
+resource "aws_security_group_rule" "egress_all" {
+  type              = "egress"
+  description       = "Autorisation de sortie complete pour les mises a jour"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.web.id
 }
