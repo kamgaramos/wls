@@ -39,7 +39,6 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        # Suppression du continue-on-error pour voir le vrai probleme si ca plante
         run: |
           terraform plan \
             -var="db_password=${{ secrets.TF_VAR_DB_PASSWORD }}" \
@@ -47,7 +46,6 @@ jobs:
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Affichage du plan dans le PR
-        # On force l execution dans le bon répertoire pour trouver le fichier
         run: terraform show tfplan
         working-directory: ${{ env.WORKING_DIR }}
 
@@ -92,13 +90,12 @@ jobs:
         with:
           name: terraform-plan
           path: ${{ env.WORKING_DIR }}
+          merge-multiple: true
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Affichage des outputs
-        run: terraform output
-        working-directory: ${{ env.WORKING_DIR }}
         run: terraform output
         working-directory: ${{ env.WORKING_DIR }}
