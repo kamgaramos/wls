@@ -37,12 +37,14 @@ jobs:
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
 
-      # Génération dynamique du fichier tfvars à partir de tes secrets GitHub
+      # Génération dynamique du fichier tfvars (Corrigé avec toutes les variables requises)
       - name: Generation du fichier terraform.tfvars
         run: |
-          echo 'db_password = "${{ secrets.TF_VAR_DB_PASSWORD }}"' > terraform.tfvars
-          echo 'ami_id      = "${{ secrets.TF_VAR_AMI_ID }}"' >> terraform.tfvars
-          echo 'suffix      = "${{ secrets.TF_VAR_SUFFIX }}"' >> terraform.tfvars
+          echo 'db_password        = "${{ secrets.TF_VAR_DB_PASSWORD }}"' > terraform.tfvars
+          echo 'ami_id             = "${{ secrets.TF_VAR_AMI_ID }}"' >> terraform.tfvars
+          echo 'suffix             = "${{ secrets.TF_VAR_SUFFIX }}"' >> terraform.tfvars
+          echo 'instance_type      = "t3.micro"' >> terraform.tfvars
+          echo 'subnet_public_cidr = "10.0.1.0/24"' >> terraform.tfvars
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Terraform Plan
