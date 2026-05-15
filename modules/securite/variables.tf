@@ -1,6 +1,15 @@
-variable "projet" { type = string }
-variable "environnement" { type = string }
-variable "suffix" { type = string }
+variable "projet" {
+  type = string
+}
+
+variable "environnement" {
+  type = string
+}
+
+variable "suffix" {
+  type    = string
+  default = "kc1-agricam-final-2026" # <-- Sécurise le déploiement si la variable arrive vide
+}
 
 variable "retention_jours" {
   type    = number
