@@ -1,4 +1,3 @@
-# .github/workflows/deploy.yml
 name: Plan et Deploiement Terraform
 
 on:
@@ -34,6 +33,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false # <-- CRUCIAL : Empeche le wrapper de bloquer la generation du fichier tfplan
 
       - name: Terraform Init
         run: terraform init
@@ -64,7 +64,7 @@ jobs:
     name: Terraform Apply (APPROBATION MANUELLE REQUISE)
     runs-on: ubuntu-latest
     needs: terraform-plan
-    if: github.ref == 'refs/heads/main' && needs.terraform-plan.outputs.planExitCode == '2'
+    if: github.ref == 'refs/heads/main' && (needs.terraform-plan.outputs.planExitCode == '2' || github.event_name == 'workflow_dispatch')
     environment:
       name: production  # Necessite une approbation manuelle dans GitHub
 
@@ -83,6 +83,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ env.TF_VERSION }}
+          terraform_wrapper: false # <-- Aligne aussi ici pour l execution de l apply
 
       - name: Terraform Init
         run: terraform init
