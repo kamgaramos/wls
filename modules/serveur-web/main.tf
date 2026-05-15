@@ -7,8 +7,8 @@ resource "aws_instance" "web" {
   associate_public_ip_address = true
 
   # Performances et Observabilité
-  ebs_optimized               = true
-  monitoring                  = true
+  ebs_optimized = true
+  monitoring    = true
 
   # Script de démarrage (Installation Nginx, Agent SSM et Configuration SSH)
   user_data = <<-EOT
@@ -27,7 +27,7 @@ resource "aws_instance" "web" {
     chmod 600 /home/ubuntu/.ssh/authorized_keys
   EOT
 
-  user_data_replace_on_change = true 
+  user_data_replace_on_change = true
 
   root_block_device {
     volume_type           = "gp3"
@@ -38,11 +38,11 @@ resource "aws_instance" "web" {
 
   metadata_options {
     http_endpoint               = "enabled"
-    http_tokens                 = "required" 
+    http_tokens                 = "required"
     http_put_response_hop_limit = 1
   }
 
-  tags = { 
+  tags = {
     Name      = "${var.projet}-serveur-${var.environnement}"
     Project   = "AgriCam"
     ManagedBy = "Terraform"

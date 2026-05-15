@@ -32,7 +32,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "stockage_lifecycle" {
   rule {
     id     = "cleanup"
     status = "Enabled"
-    
+
     # Ajout du filtre pour supprimer le Warning
     filter {
       prefix = ""
@@ -98,18 +98,18 @@ resource "aws_s3_bucket_policy" "logs" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "AWSCloudTrailAclCheck"
-        Effect = "Allow"
+        Sid       = "AWSCloudTrailAclCheck"
+        Effect    = "Allow"
         Principal = { Service = "cloudtrail.amazonaws.com" }
-        Action   = "s3:GetBucketAcl"
-        Resource = aws_s3_bucket.logs.arn
+        Action    = "s3:GetBucketAcl"
+        Resource  = aws_s3_bucket.logs.arn
       },
       {
-        Sid    = "AWSCloudTrailWrite"
-        Effect = "Allow"
+        Sid       = "AWSCloudTrailWrite"
+        Effect    = "Allow"
         Principal = { Service = "cloudtrail.amazonaws.com" }
-        Action   = "s3:PutObject"
-        Resource = "${aws_s3_bucket.logs.arn}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
+        Action    = "s3:PutObject"
+        Resource  = "${aws_s3_bucket.logs.arn}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
         Condition = {
           StringEquals = { "s3:x-amz-acl" = "bucket-owner-full-control" }
         }
@@ -130,8 +130,8 @@ resource "aws_iam_role" "cloudtrail_to_cloudwatch" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
+      Action    = "sts:AssumeRole"
+      Effect    = "Allow"
       Principal = { Service = "cloudtrail.amazonaws.com" }
     }]
   })
@@ -155,7 +155,7 @@ resource "aws_iam_role_policy" "cloudtrail_logging" {
 resource "aws_cloudtrail" "audit" {
   name                          = "${var.projet}-trail-${var.environnement}"
   s3_bucket_name                = aws_s3_bucket.logs.id
-  is_multi_region_trail          = true
+  is_multi_region_trail         = true
   enable_log_file_validation    = true
   include_global_service_events = true
 
