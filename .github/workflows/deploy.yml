@@ -43,6 +43,8 @@ jobs:
           terraform plan \
             -lock=false \
             -var="db_password=${{ secrets.TF_VAR_DB_PASSWORD }}" \
+            -var="ami_id=${{ secrets.TF_VAR_AMI_ID }}" \
+            -var="suffix=${{ secrets.TF_VAR_SUFFIX }}" \
             -out=tfplan
         working-directory: ${{ env.WORKING_DIR }}
 
