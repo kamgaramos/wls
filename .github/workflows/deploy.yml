@@ -37,7 +37,7 @@ jobs:
         run: terraform init
         working-directory: ${{ env.WORKING_DIR }}
 
-      # Génération dynamique du fichier tfvars (Toutes les variables requises incluses)
+      # Génération dynamique complète du fichier tfvars
       - name: Generation du fichier terraform.tfvars
         run: |
           echo 'db_password        = "${{ secrets.TF_VAR_DB_PASSWORD }}"' > terraform.tfvars
@@ -47,6 +47,8 @@ jobs:
           echo 'subnet_public_cidr = "10.0.1.0/24"' >> terraform.tfvars
           echo 'projet             = "agricam"' >> terraform.tfvars
           echo 'vpc_cidr           = "10.0.0.0/16"' >> terraform.tfvars
+          echo 'aws_region         = "${{ env.AWS_REGION }}"' >> terraform.tfvars
+          echo 'environnement      = "prod"' >> terraform.tfvars
         working-directory: ${{ env.WORKING_DIR }}
 
       - name: Terraform Plan
