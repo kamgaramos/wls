@@ -1,5 +1,5 @@
 resource "aws_vpc" "main" {
-  # checkov:skip=CKV_AWS_111: "Les Flow Logs seront geres globalement pour application AgriCam"
+  # checkov:skip=CKV_AWS_111
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
   enable_dns_support   = true
@@ -46,10 +46,10 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_security_group" "web" {
-  # checkov:skip=CKV_AWS_24: "Ouverture du port SSH au public necessaire"
-  # checkov:skip=CKV_AWS_260: "Entree du trafic sur les ports 80 et 443 publique pour le serveur"
-  # checkov:skip=CKV_AWS_382: "Autorisation SSH publique assumee pour ce deploiement"
-  # checkov:skip=CKV_AWS_23: "La regle egress ouverte est requise pour installer Nginx"
+  # checkov:skip=CKV_AWS_24
+  # checkov:skip=CKV_AWS_260
+  # checkov:skip=CKV_AWS_382
+  # checkov:skip=CKV_AWS_23
   name        = "${var.projet}-sg-web-${var.environnement}"
   description = "Autorise HTTP et SSH"
   vpc_id      = aws_vpc.main.id
