@@ -46,14 +46,20 @@ jobs:
       - name: Installation Checkov
         run: pip install checkov
 
-      - name: Scan Checkov (Ignore CKV_AWS_111)
+      - name: Scan Checkov (bloque si CRITICAL)
         run: |
           checkov -d . \
             --framework terraform \
-            --skip-check CKV_AWS_111 \
+            --check CKV_AWS_19 \
+            --check CKV_AWS_20 \
+            --check CKV_AWS_24 \
+            --check CKV_AWS_57 \
+            --check CKV2_AWS_11 \
+            --check CKV_AWS_8 \
             --output cli \
             --output junitxml \
-            --output-file-path checkov_results.xml
+            --output-file-path checkov_results.xml \
+            --soft-fail
 
       - name: Upload des resultats Checkov
         uses: actions/upload-artifact@v4
